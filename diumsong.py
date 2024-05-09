@@ -12,7 +12,7 @@ import json
 class LecteurMusique:
     def __init__(self, root):
         self.root = root
-        self.root.title("Dium-Song")
+        self.root.title("DiumSong")
         self.repertoire = ""
         self.musiques = []
         self.current_music_index = -1

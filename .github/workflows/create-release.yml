@@ -3,21 +3,25 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*'  # Ce déclencheur s'active lorsque le push comprend des tags qui commencent par 'v'
+      - 'v*.*.*'  # Trigger the workflow when a tag matching a version pattern is pushed
 
 jobs:
   create_release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Ensure you're working with the latest version of the codebase
+      
+      - name: Get the tag
+        id: get_tag
+        run: |
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
 
-      - name: Create GitHub Release
+      - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}  # Utilisez le nom du tag pour créer la release
-          name: 'Release ${{ github.ref_name }}'
-          body: 'Release notes for ${{ github.ref_name }}'  # Vous pouvez ajouter des notes de release
-          draft: false  # Si true, la release est créée en brouillon
-          prerelease: false  # Si true, marque la release comme une version préliminaire
+          tag: ${{ steps.get_tag.outputs.tag }}
+          name: Release ${{ steps.get_tag.outputs.tag }}
+          draft: false  # Set to true if you want to create a draft release
+          prerelease: false  # Set to true for a pre-release
+          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token to authorize the release creation

@@ -1,0 +1,23 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Ce déclencheur s'active lorsque le push comprend des tags qui commencent par 'v'
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}  # Utilisez le nom du tag pour créer la release
+          name: 'Release ${{ github.ref_name }}'
+          body: 'Release notes for ${{ github.ref_name }}'  # Vous pouvez ajouter des notes de release
+          draft: false  # Si true, la release est créée en brouillon
+          prerelease: false  # Si true, marque la release comme une version préliminaire
